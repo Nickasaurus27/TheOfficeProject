@@ -49,9 +49,3 @@ The project uses two tables:
    - `description` (VARCHAR)
 
 > Note: as part of cleaning, `us_viewers` values are rounded and cast from `NUMERIC` to `BIGINT` for easier analysis.
-
-1. **Clone the repo**
-
-   ```bash
-   git clone https://github.com/<your-username>/the-office-sql-project.git
-   cd the-office-sql-project

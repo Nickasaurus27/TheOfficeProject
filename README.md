@@ -1,91 +1,57 @@
-# The Office – SQL Analytics Project
+# The Office – SQL Data Exploration
 
-This project uses SQL to explore one of my favourite sitcoms, *The Office*.  
-Starting from two raw CSVs (episodes + IMDb data), I:
+This project uses SQL to explore data from one of my favourite sitcoms, *The Office*.  
+Using episode-level metadata and IMDb ratings, I answer questions like:
 
-- Design and create database tables
-- Clean and standardize key fields
-- Build views and use window functions / CTEs
-- Answer analytical questions about episodes, writers, seasons, and directors
-
-> **Tech stack:** PostgreSQL (or compatible SQL), window functions, CTEs, views
+- How many episodes and seasons are there, and how are they distributed?
+- Which writers and directors contributed the most, and how did their episodes perform?
+- Which seasons were highest rated, and which episodes over- or under-performed their season?
 
 ---
 
-## Project Overview
+## 📂 Project Overview
 
-The goal of this project is to **showcase practical SQL skills** using a fun, real dataset:
+**Goal:** Showcase practical SQL skills (joins, window functions, text manipulation, CTEs, views, CASE logic) through a fun exploratory analysis of *The Office*.
 
-- **Data modeling & ingestion** – creating tables and loading CSVs into a relational schema  
-- **Data cleaning** – handling numeric precision, fixing inconsistent text fields  
-- **Analytical querying** – aggregates, window functions, CTEs, string functions, and views  
-- **Storytelling** – answering concrete questions about *The Office* and its episodes
+**Key skills demonstrated:**
 
-I focus on questions like:
-
-- How many episodes are there overall and per season?  
-- Which writers contributed the most to the show?  
-- How do episode ratings compare to their season’s average?  
-- Which seasons are the highest-rated?  
-- Which directors tend to get the best ratings and viewership?
+- Data cleaning and schema design  
+- Aggregations and grouping  
+- String manipulation to handle multi-writer episodes  
+- Window functions to compare episodes to season averages  
+- CTEs and views to organize reusable logic  
+- Simple classification logic (bucketing directors by performance)
 
 ---
 
-## Data Sources
+## 🧾 Data
 
-The project uses two CSV files:
+The project uses two tables:
 
-- `the_office_imdb.csv`  
-  - Season and episode number  
-  - Title  
-  - Original air date  
-  - IMDb rating  
-  - Total votes  
-  - Description
+1. `the_office_episodes`  
+   - `season` (SMALLINT)  
+   - `episode_num_in_season` (SMALLINT)  
+   - `episode_num_overall` (SMALLINT)  
+   - `title` (VARCHAR)  
+   - `directed_by` (VARCHAR)  
+   - `written_by` (VARCHAR)  
+   - `original_air_date` (DATE)  
+   - `prod_code` (INT)  
+   - `us_viewers` (NUMERIC → converted to BIGINT)
 
-- `the_office_episodes.csv`  
-  - Season  
-  - Episode number in season and overall  
-  - Title  
-  - Directed by / written by  
-  - Original air date  
-  - Production code  
-  - U.S. viewers (in millions)
+2. `the_office_imdb`  
+   - `season` (SMALLINT)  
+   - `episode_number` (SMALLINT)  
+   - `title` (VARCHAR)  
+   - `original_air_date` (DATE)  
+   - `imdb_rating` (NUMERIC)  
+   - `total_votes` (INT)  
+   - `description` (VARCHAR)
 
-These are loaded into two tables: `the_office_imdb` and `the_office_episodes`. :contentReference[oaicite:1]{index=1}  
+> Note: as part of cleaning, `us_viewers` values are rounded and cast from `NUMERIC` to `BIGINT` for easier analysis.
 
----
+1. **Clone the repo**
 
-## Schema & Data Loading
-
-The database layer starts with explicit table definitions:
-
-- `the_office_imdb`  
-  - `season`, `episode_number`, `title`, `original_air_date`, `imdb_rating`, `total_votes`, `description`
-- `the_office_episodes`  
-  - `season`, `episode_num_in_season`, `episode_num_overall`, `title`, `directed_by`, `written_by`, `original_air_date`, `prod_code`, `us_viewers`
-
-Example DDL (simplified):
-
-```sql
-CREATE TABLE IF NOT EXISTS the_office_imdb (
-    season SMALLINT,
-    episode_number SMALLINT,
-    title VARCHAR(100),
-    original_air_date DATE,
-    imdb_rating NUMERIC,
-    total_votes INT,
-    description VARCHAR(500)
-);
-
-CREATE TABLE IF NOT EXISTS the_office_episodes (
-    season SMALLINT,
-    episode_num_in_season SMALLINT,
-    episode_num_overall SMALLINT, 
-    title VARCHAR(50), 
-    directed_by VARCHAR(50),
-    written_by VARCHAR(100),
-    original_air_date DATE,
-    prod_code INT,
-    us_viewers NUMERIC
-);
+   ```bash
+   git clone https://github.com/<your-username>/the-office-sql-project.git
+   cd the-office-sql-project
